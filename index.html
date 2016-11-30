@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Neighborhood Map</title>
+		<link rel="stylesheet" href="css/main.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+		<link rel = "stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	</head>
+	<body>
+      <div class="row">
+      	<div class="col-xs-12">
+      		<div class="top">
+      			<h1>Explore My Neighborhood!</h1>
+      		</div>
+      	</div>
+      </div>
+      <div class="row">
+      	<div class="col-xs-6 search-form">
+      		<input class="search search-form" type="text" placeholder="Filter Locations" data-bind="textInput: filter" />
+           <ul data-bind="foreach: filteredArray" class="list-view"> 
+      		 	<li class="item">
+                <span data-bind="text: title, click: $parent.showClick">
+              </li>
+    			 </ul>
+    		</div>
+        <div class="col-xs-6"></div>
+    	</div>
+      <div class="row">
+          <div id="map"></div>
+      </div>
+    <script type="text/javascript" src="js/knockout/knockout-min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyAfYzQb_B91TMAnRbD-g9RCDOzBk0I6XP8"></script>
+		<script async type="text/javascript" src="js/newscript.js"></script>
+	</body>
+</html>

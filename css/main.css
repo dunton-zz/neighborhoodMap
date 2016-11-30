@@ -1,0 +1,120 @@
+body {
+   font-family: Arial, sans-serif;
+   height: 100%;
+   margin: 0;
+   padding: 0;
+ }
+
+ .container {
+   height: 100%;
+   position: relative;
+ }
+
+ input {
+   font-size: 12px;
+ }
+
+ h1 {
+   color: #525454;
+   font-size: 22px;
+   margin: 0 0 10px 0;
+   text-align: center;
+ }
+
+ #hide-listings,
+ #show-listings {
+   width: 48%;
+ }
+
+ hr {
+   background: #D0D7D9;
+   height: 1px;
+   margin: 20px 0 20px 0;
+   border: none;
+}  
+
+ #map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+
+
+
+.search-form {
+  left: 50px;
+  float: right;
+  display: block;
+  position: fixed;
+  top: 150px;
+  z-index: 1000;
+  float: left;
+  left: 50px;
+  overflow: auto;
+  padding: 5px;
+  margin: 2px 10px 0;
+  min-width: 208px;
+
+}
+
+ #pano {
+   width: 200px;
+   height: 200px;
+ }
+
+ #places-search,
+ #search-within-time-text {
+   width: 84%;
+ }
+
+ .text {
+   font-size: 12px;
+ }
+
+ #toggle-drawing {
+   width: 27%;
+   position: relative;
+   margin-left: 10px;
+ }
+
+ #zoom-to-area-text {
+   width: 70%;
+ }
+
+ #zoom-to-area {
+   width: 24%;
+}
+
+.infowindow {
+  text-align: center;
+}
+   
+.list-view {
+  display: block;
+  position: fixed;
+  top: 210px;
+  z-index: 1000;
+  float: left;
+  left: 50px;
+  min-width: 200px;
+  overflow: auto;
+  padding: 5px;
+  margin: 2px 10px 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);  
+} 
+
+.item {
+  background-color: none;
+} .item:hover {
+  color: #cdddf7;
+  cursor: pointer;
