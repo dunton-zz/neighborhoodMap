@@ -10,6 +10,10 @@ body {
    position: relative;
  }
 
+ #ajaxData {
+  display: none;
+ }
+
  input {
    font-size: 12px;
  }
@@ -118,3 +122,4 @@ body {
 } .item:hover {
   color: #cdddf7;
   cursor: pointer;
+}
