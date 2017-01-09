@@ -1,6 +1,21 @@
-# neighborhoodMap
-Map of local locations using Google Maps API and implementing filter functionality built using the Knockout MVC JS framework.
+# Neighborhood Map Project
 
-# Use the App
-Download the Repo and open the index.html file in your browser! You will be able to search, click and get infomation on all locations.
+## Basic Info
 
+In this project I had to use the MVC framework, Knockout, to interact with the Google Maps and Foursquare APIs and build a functional webpage.
+
+## Files
+
+When the file is unzipped there should be the following files:
+* **README.md**
+* **index**.**html**
+* **js** folder
+    * **newscript.js**
+    * **knockout** folder
+        * **knockout-min.js**   
+* **css** folder
+    * **main.css**
+
+## Running the Files
+
+Simply open the **index**.**html** file in your browser. You can now search locations, animate markers and get Foursquare checkin data!
