@@ -1,7 +1,7 @@
 var allMarkers = [];
 var infowindow = null;
 
-$(document).ready(function() {
+$(window).bind("load", function() {
   var self = this;
   var map;
   // create array of locations
@@ -23,8 +23,8 @@ $(document).ready(function() {
       self.allLocations = ko.observableArray([]);
       self.map = ko.observable(map);
 
-      self.filter = ko.observable("");
-      self.search = ko.observable("");
+      self.filter = ko.observable('');
+      self.search = ko.observable('');
 
       // initialize map
       initMap();
@@ -39,51 +39,54 @@ $(document).ready(function() {
         self.allLocations.push(allMarkers[i]);
       }
 
-      getFoursquareUrl(locations);
+      //getFoursquareUrl(locations);
 
       // build in filter functionality to check if letter is in location title
       self.filteredArray = ko.computed(function() {
         return ko.utils.arrayFilter(self.allLocations(), function(item) {
           if (item.title.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1) {
             if(item.marker) {
-              item.marker.setMap(map); 
+              item.marker.setVisible(true); 
             }
           } else {
             if(item.marker) {
-              item.marker.setMap(null);
+              item.marker.setVisible(false);
             }
           }     
           return item.title.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
         });
       }, self);
 
+      
       self.filterLocations = ko.computed(function() {
         return ko.utils.arrayForEach(self.allLocations(), function(marker) {
           var text = marker.title.toLowerCase();
           if (text.indexOf(self.filter().toLowerCase()) !== -1) {
-            marker.setMap(map);
+            marker.setVisible(true);
           }
           else {
-            marker.setMap(null);
+            marker.setVisible(false);
           }
         });
        });
       
+      setInfowindows(allMarkers, getFoursquareUrl(locations));
+
       // animate on click
       self.showClick = function () {
         for (var i = 0; i < self.markers.length; i++) {
           self.markers[i].infowindow.close();
         }
         self.setMarkerAnimation(this); 
-      
       };
 
       // make markers bounce
       self.setMarkerAnimation = function (marker) {
+        google.maps.event.trigger(marker, 'click');
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout( function() {
           marker.setAnimation(null);
-        }, 800);
+        }, 700);
       };    
   };
 
@@ -107,6 +110,16 @@ $(document).ready(function() {
       });
     }
 
+    function toggleBounce(marker) {
+      if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+      } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout( function() {
+          marker.setAnimation(null);
+        }, 700);
+      }
+    }
     // iterate over locations and create marker properties
     function setLocations(locations, markers) { 
       // create markers     
@@ -140,10 +153,9 @@ $(document).ready(function() {
     function getFoursquareUrl(locations) {
       var fourSquareUrl = '';
       var checkins;
-      for (var x in locations) {
-        // closure used to keep x value constant
-        (function(x)
-          {
+      var storeData = [];
+      for (var x =0; x <locations.length; x++) {
+        
             fourSquareUrl = 'https://api.foursquare.com/v2/venues/search' +
             '?client_id=AMWJL4GLRVDE4NTXYIX3A1PNL2TOKDMK5AMMIBK42QINFH1W' +
             '?client_secret=15ZYGX5OR4PDWSXXUWPIVSQE1KZIND3MH3IIXVKNO2XT2MUK' +
@@ -151,20 +163,23 @@ $(document).ready(function() {
             '&ll=' + locations[x].location.lat + ',' + locations[x].location.lng +
             '&query=' + locations[x].title + '&intent=match' +
             '&oauth_token=5SJQANNEWCQNY0TPY2OLA5LTNOHRPSNZE40BWUCSHR1KXMDX&v=20161107';
-        
-            var $storeData = $("#ajaxData");
-            $.getJSON(fourSquareUrl, function(data) {
-              if (!data) {
-                alert("Could not fetch Foursquare data");
+      
+            $.ajax({
+              url: fourSquareUrl,
+              async: false,
+              dataType: 'json',
+              success: function (data) {
+                checkins = data.response.venues[0].stats.checkinsCount;
+                var formattedCheckins = Number(checkins);
+                storeData.push(formattedCheckins);
+              },
+              error: function () {
+                storeData.push("No checkin data available")
               }
-              checkins = data.response.venues[0].stats.checkinsCount;
-              var formattedCheckins = Number(checkins);
-              // append API data to the DOM with 'x' so we know proper order
-              $storeData.append('<p class="checkins">' + x + '|' + formattedCheckins + '</p>');
             });
-          })(x);
+          };
+          return storeData;
         }
-      }
 
     // make different marker icon colors
     function makeMarkerIcon(markerColor) {
@@ -178,46 +193,25 @@ $(document).ready(function() {
         return markerImage;
     }
 
-  // call viewModel to apply Knockout bindings
-  ko.applyBindings(new viewModel(locations));
+    function setInfowindows(markers, array) {
+          for (var x =0; x<array.length; x++) {
+              allMarkers[x].checkins = array[x];
+          }
 
-  
-});
-
-// this executes after all AJAX calls are finished
-$(document).ajaxStop(function () {
-        // use empty array to grab AJAX data we appended to DOM    
-        var arr = [];
-        $('.checkins').each(function() {
-            arr.push($(this).text());
-        });
-        
-        // sort array by their indexes ('x' as we stated earlier)  
-        var formattedArr = arr.sort();
-        var checkinArr = [];
-        for (var x =0; x<formattedArr.length; x++) {
-          // remove index and '|' from string
-          var checkinData = formattedArr[x].substring(2);
-          checkinArr.push(checkinData);
-        }
-
-        // set markers' checkins property equal to our API call data
-        for (var i = 0; i < arr.length; i++) {
-          allMarkers[i].checkins = checkinArr[i];
-        }
-        
-        function setInfowindows(markers) {
           // add infowindow showing title and checkin data
           for (var i = 0; i < markers.length; i++) {
             var marker = markers[i]; 
             google.maps.event.addListener(marker, 'click', function() {
+              toggleBounce(this);
               var infoContent = '<div class="infowindow"><strong>' + this.title + '</strong>' + '<br>'+ 'Checkins: ' + this.checkins + '</div>';
               infowindow.setContent(infoContent);
               infowindow.open(map, this);
             });
           }
         }
-        // call function to setInfowindows
-        setInfowindows(allMarkers);   
+  
+  // call viewModel to apply Knockout bindings
+  ko.applyBindings(new viewModel(locations));  
 });
+
 
